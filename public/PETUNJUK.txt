@@ -1,0 +1,26 @@
+Purrfect Math Adventure - PWA public assets
+
+Copy the CONTENTS of this "public" folder into your project's public folder.
+Keep the folders as they are:
+- icons/icon-192.png
+- icons/icon-512.png
+- icons/apple-touch-icon.png
+- manifest.webmanifest
+- sw.js
+- apple-touch-icon.png
+- favicon.png
+
+The app's index.html should link to:
+<link rel="manifest" href="/aplikasi-pembelajaran-teorema-pythagoras-2225250080/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/aplikasi-pembelajaran-teorema-pythagoras-2225250080/apple-touch-icon.png">
+<meta name="theme-color" content="#8b65d8">
+
+Register the service worker from src/main.js (after the app code):
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(
+      '/aplikasi-pembelajaran-teorema-pythagoras-2225250080/sw.js',
+      { scope: '/aplikasi-pembelajaran-teorema-pythagoras-2225250080/' }
+    ).catch(error => console.error('Service worker registration failed:', error))
+  })
+}

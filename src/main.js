@@ -1,577 +1,857 @@
 
 import './style.css'
 
-const savedName = localStorage.getItem('pythagoras-name') || ''
+// ==========================================
+// PYTHAMATH - BELAJAR PYTHAGORAS BERSAMA
+// ==========================================
+
+const app = document.querySelector('#app')
+
+const menu = [
+  ['home', '⌂', 'Beranda'],
+  ['materi', '📚', 'Materi'],
+  ['simulasi', '📐', 'Simulasi'],
+  ['latihan', '✏️', 'Latihan'],
+  ['quiz', '🏆', 'Quiz'],
+  ['chat', '💬', 'Tanya Kak Mey'],
+  ['pengaturan', '⚙️', 'Pengaturan']
+]
+
+const questions = [
+  { q: 'Sebuah segitiga siku-siku memiliki sisi 5 cm dan 12 cm. Berapa sisi miringnya?', a: ['13 cm', '14 cm', '15 cm', '17 cm'], c: 0, e: '√(5² + 12²) = √169 = 13 cm.' },
+  { q: 'Sisi miring segitiga 17 cm dan salah satu sisi 8 cm. Berapa sisi lainnya?', a: ['9 cm', '12 cm', '15 cm', '16 cm'], c: 2, e: '√(17² − 8²) = √225 = 15 cm.' },
+  { q: 'Dua sisi siku-siku adalah 7 cm dan 24 cm. Sisi miringnya adalah ...', a: ['25 cm', '26 cm', '27 cm', '28 cm'], c: 0, e: '√(49 + 576) = 25 cm.' },
+  { q: 'Sisi siku-siku 40 cm dan 9 cm. Sisi miringnya adalah ...', a: ['39 cm', '40 cm', '41 cm', '42 cm'], c: 2, e: '√(1600 + 81) = 41 cm.' },
+  { q: 'Sisi miring 29 cm dan salah satu sisi 20 cm. Sisi lainnya adalah ...', a: ['19 cm', '20 cm', '21 cm', '22 cm'], c: 2, e: '√(841 − 400) = 21 cm.' },
+  { q: 'Dua sisi siku-siku 12 cm dan 35 cm. Sisi miringnya adalah ...', a: ['35 cm', '36 cm', '37 cm', '38 cm'], c: 2, e: '√(144 + 1225) = 37 cm.' },
+  { q: 'Dua sisi siku-siku 16 cm dan 30 cm. Sisi miringnya adalah ...', a: ['32 cm', '34 cm', '36 cm', '38 cm'], c: 1, e: '√(256 + 900) = 34 cm.' },
+  { q: 'Sisi miring 53 cm dan salah satu sisi 28 cm. Sisi lainnya adalah ...', a: ['35 cm', '40 cm', '45 cm', '48 cm'], c: 2, e: '√(2809 − 784) = 45 cm.' },
+  { q: 'Dua sisi siku-siku 33 cm dan 56 cm. Sisi miringnya adalah ...', a: ['63 cm', '64 cm', '65 cm', '66 cm'], c: 2, e: '√(1089 + 3136) = 65 cm.' },
+  { q: 'Sisi miring 61 cm dan salah satu sisi 11 cm. Sisi lainnya adalah ...', a: ['58 cm', '59 cm', '60 cm', '61 cm'], c: 2, e: '√(3721 − 121) = 60 cm.' },
+  { q: 'Sisi miring 65 cm dan salah satu sisi 16 cm. Sisi lainnya adalah ...', a: ['60 cm', '61 cm', '62 cm', '63 cm'], c: 3, e: '√(4225 − 256) = 63 cm.' },
+  { q: 'Sisi miring 50 cm dan salah satu sisi 14 cm. Sisi lainnya adalah ...', a: ['46 cm', '47 cm', '48 cm', '49 cm'], c: 2, e: '√(2500 − 196) = 48 cm.' },
+  { q: 'Sisi miring 85 cm dan salah satu sisi 13 cm. Sisi lainnya adalah ...', a: ['82 cm', '83 cm', '84 cm', '85 cm'], c: 2, e: '√(7225 − 169) = 84 cm.' },
+  { q: 'Dua sisi siku-siku 48 cm dan 55 cm. Sisi miringnya adalah ...', a: ['70 cm', '71 cm', '72 cm', '73 cm'], c: 3, e: '√(2304 + 3025) = 73 cm.' },
+  { q: 'Sisi miring 89 cm dan salah satu sisi 39 cm. Sisi lainnya adalah ...', a: ['78 cm', '79 cm', '80 cm', '81 cm'], c: 2, e: '√(7921 − 1521) = 80 cm.' },
+  { q: 'Sisi miring 100 cm dan salah satu sisi 28 cm. Sisi lainnya adalah ...', a: ['94 cm', '95 cm', '96 cm', '97 cm'], c: 2, e: '√(10000 − 784) = 96 cm.' },
+  { q: 'Sisi miring 101 cm dan salah satu sisi 20 cm. Sisi lainnya adalah ...', a: ['97 cm', '98 cm', '99 cm', '100 cm'], c: 2, e: '√(10201 − 400) = 99 cm.' },
+  { q: 'Sisi miring 125 cm dan salah satu sisi 35 cm. Sisi lainnya adalah ...', a: ['118 cm', '119 cm', '120 cm', '121 cm'], c: 2, e: '√(15625 − 1225) = 120 cm.' },
+  { q: 'Sisi miring 145 cm dan salah satu sisi 87 cm. Sisi lainnya adalah ...', a: ['114 cm', '115 cm', '116 cm', '117 cm'], c: 2, e: '√(21025 − 7569) = 116 cm.' },
+  { q: 'Sisi miring 109 cm dan salah satu sisi 60 cm. Sisi lainnya adalah ...', a: ['89 cm', '90 cm', '91 cm', '92 cm'], c: 2, e: '√(11881 − 3600) = 91 cm.' }
+]
+
+const quizQuestions = [
+  { q: 'Apa bunyi Teorema Pythagoras?', a: ['a + b = c', 'a² + b² = c²', 'a × b = c', 'a² − b² = c²'], c: 1 },
+  { q: 'Sisi terpanjang segitiga siku-siku disebut ...', a: ['Alas', 'Tinggi', 'Sisi miring', 'Sisi tegak'], c: 2 },
+  { q: 'Segitiga dengan sisi 3, 4, dan 5 termasuk ...', a: ['Segitiga siku-siku', 'Segitiga sama sisi', 'Segitiga tumpul', 'Segitiga lancip'], c: 0 },
+  { q: 'Jika a = 6 dan b = 8, maka c adalah ...', a: ['9', '10', '11', '12'], c: 1 },
+  { q: 'Rumus mencari sisi siku-siku adalah ...', a: ['√(a² + c²)', 'a² + b²', '√(c² − a²)', 'c² + a²'], c: 2 }
+]
 
 const state = {
-  name: savedName,
-  language: 'id',
-  theme: 'light',
+  name: localStorage.getItem('pythaName') || '',
+  language: localStorage.getItem('pythaLanguage') || 'id',
+  page: 'home',
+  dark: localStorage.getItem('pythaDark') === 'true',
   music: false,
-  page: savedName ? 'home' : 'intro',
-  a: 3,
-  b: 4,
-  practiceAnswer: '',
-  question: 0,
-  score: 0,
-  answered: false
+  practiceIndex: 0,
+  practiceScore: 0,
+  practiceAnswered: false,
+  practiceDone: false,
+  quizIndex: 0,
+  quizScore: 0,
+  quizAnswered: false,
+  quizDone: false,
+  chat: []
 }
 
-const translations = {
-  id: {
-    greeting: 'Selamat datang di ruang belajar Kak Meyliana!',
-    intro: 'Sebelum mulai belajar, yuk kenalan dulu!',
-    nickname: 'Nama panggilan kamu',
-    start: 'Mulai Belajar',
-    home: 'Beranda',
-    material: 'Materi',
-    simulation: 'Simulasi',
-    practice: 'Latihan',
-    quiz: 'Kuis',
-    settings: 'Pengaturan',
-    welcome: 'Siap menjelajahi dunia Pythagoras?',
-    subtitle: 'Belajar Teorema Pythagoras melalui materi, ilustrasi, dan aktivitas interaktif.',
-    begin: 'Ayo Mulai',
-    lessons: 'Temukan Cara Belajarmu',
-    materialDesc: 'Kenali konsep, rumus, dan contoh soal.',
-    simulationDesc: 'Ubah panjang sisi dan lihat hasilnya.',
-    practiceDesc: 'Berlatih dengan soal dan pembahasan.',
-    quizDesc: 'Uji pemahaman dan lihat nilaimu.',
-    formula: 'Rumus Teorema Pythagoras',
-    definition: 'Teorema Pythagoras menjelaskan hubungan antara ketiga sisi segitiga siku-siku.',
-    hypotenuse: 'Sisi miring (c)',
-    base: 'Alas (a)',
-    height: 'Tinggi (b)',
-    example: 'Contoh Soal',
-    exampleDesc: 'Segitiga siku-siku memiliki alas 3 cm dan tinggi 4 cm. Berapa panjang sisi miringnya?',
-    solution: 'Penyelesaian',
-    answer: 'Jawaban',
-    simulationTitle: 'Eksplorasi Segitiga',
-    simulationDesc: 'Geser pengaturan untuk mengubah panjang sisi segitiga.',
-    practiceTitle: 'Yuk, Berlatih!',
-    practiceQuestion: 'Sebuah segitiga siku-siku memiliki alas 9 cm dan tinggi 12 cm. Berapa sisi miringnya?',
-    check: 'Periksa Jawaban',
-    correct: 'Hebat! Jawaban kamu benar.',
-    incorrect: 'Belum tepat. Coba periksa kembali perhitungannya.',
-    quizTitle: 'Kuis Pythagoras',
-    next: 'Soal Berikutnya',
-    finish: 'Lihat Hasil',
-    restart: 'Ulangi Kuis',
-    result: 'Hasil Kuis',
-    settingsTitle: 'Pengaturan Aplikasi',
-    language: 'Bahasa',
-    appearance: 'Tampilan',
-    light: 'Terang',
-    dark: 'Gelap',
-    music: 'Musik Latar',
-    changeName: 'Ganti Nama',
-    back: 'Kembali',
-    footer: 'Belajar bersama Kak Meyliana • Explore, Learn, Discover'
-  },
-  en: {
-    greeting: "Welcome to Kak Meyliana's learning space!",
-    intro: "Before we start learning, let's get to know each other!",
-    nickname: 'Your nickname',
-    start: 'Start Learning',
-    home: 'Home',
-    material: 'Materials',
-    simulation: 'Simulation',
-    practice: 'Practice',
-    quiz: 'Quiz',
-    settings: 'Settings',
-    welcome: 'Ready to explore the world of Pythagoras?',
-    subtitle: 'Learn the Pythagorean Theorem through materials, illustrations, and interactive activities.',
-    begin: "Let's Start",
-    lessons: 'Explore Your Learning Journey',
-    materialDesc: 'Discover concepts, formulas, and examples.',
-    simulationDesc: 'Change side lengths and see the results.',
-    practiceDesc: 'Practice with questions and explanations.',
-    quizDesc: 'Test your understanding and see your score.',
-    formula: 'Pythagorean Theorem Formula',
-    definition: 'The Pythagorean Theorem describes the relationship between the three sides of a right triangle.',
-    hypotenuse: 'Hypotenuse (c)',
-    base: 'Base (a)',
-    height: 'Height (b)',
-    example: 'Example',
-    exampleDesc: 'A right triangle has a base of 3 cm and a height of 4 cm. What is its hypotenuse?',
-    solution: 'Solution',
-    answer: 'Answer',
-    simulationTitle: 'Explore the Triangle',
-    simulationDesc: 'Adjust the sliders to change the triangle side lengths.',
-    practiceTitle: "Let's Practice!",
-    practiceQuestion: 'A right triangle has a base of 9 cm and a height of 12 cm. What is its hypotenuse?',
-    check: 'Check Answer',
-    correct: 'Great! Your answer is correct.',
-    incorrect: 'Not quite. Check your calculation again.',
-    quizTitle: 'Pythagoras Quiz',
-    next: 'Next Question',
-    finish: 'See Results',
-    restart: 'Restart Quiz',
-    result: 'Quiz Results',
-    settingsTitle: 'Application Settings',
-    language: 'Language',
-    appearance: 'Appearance',
-    light: 'Light',
-    dark: 'Dark',
-    music: 'Background Music',
-    changeName: 'Change Name',
-    back: 'Back',
-    footer: 'Learn with Kak Meyliana • Explore, Learn, Discover'
-  }
-}
+let audioContext = null
+let musicTimer = null
+let noteIndex = 0
 
-const questions = {
-  id: [
-    ['Apa rumus Teorema Pythagoras?', ['a + b = c', 'a² + b² = c²', 'a² - b² = c²', 'a × b = c'], 1, 'Rumus Pythagoras adalah a² + b² = c².'],
-    ['Jika alas 3 cm dan tinggi 4 cm, berapa sisi miringnya?', ['5 cm', '6 cm', '7 cm', '8 cm'], 0, 'c = √(3² + 4²) = √25 = 5 cm.'],
-    ['Jika sisi miring 13 cm dan alas 5 cm, berapa tingginya?', ['10 cm', '11 cm', '12 cm', '13 cm'], 2, 'b = √(13² − 5²) = √144 = 12 cm.'],
-    ['Sisi miring segitiga siku-siku adalah ...', ['Sisi terpendek', 'Sisi di depan sudut siku-siku', 'Sisi alas', 'Semua sisi'], 1, 'Sisi miring berada di depan sudut siku-siku dan merupakan sisi terpanjang.'],
-    ['Jika alas 6 cm dan tinggi 8 cm, berapa sisi miringnya?', ['9 cm', '10 cm', '12 cm', '14 cm'], 1, 'c = √(6² + 8²) = √100 = 10 cm.']
-  ],
-  en: [
-    ['What is the Pythagorean formula?', ['a + b = c', 'a² + b² = c²', 'a² - b² = c²', 'a × b = c'], 1, 'The formula is a² + b² = c².'],
-    ['If the base is 3 cm and the height is 4 cm, what is the hypotenuse?', ['5 cm', '6 cm', '7 cm', '8 cm'], 0, 'c = √(3² + 4²) = 5 cm.'],
-    ['If the hypotenuse is 13 cm and the base is 5 cm, what is the height?', ['10 cm', '11 cm', '12 cm', '13 cm'], 2, 'b = √(13² − 5²) = 12 cm.'],
-    ['The hypotenuse is ...', ['The shortest side', 'The side opposite the right angle', 'The base', 'All sides'], 1, 'The hypotenuse is opposite the right angle and is the longest side.'],
-    ['If the base is 6 cm and the height is 8 cm, what is the hypotenuse?', ['9 cm', '10 cm', '12 cm', '14 cm'], 1, 'c = √(6² + 8²) = 10 cm.']
-  ]
-}
+// ==========================================
+// FUNGSI DASAR
+// ==========================================
 
-const $ = selector => document.querySelector(selector)
-const t = () => translations[state.language]
-
-function safe(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
   })[char])
 }
 
+function cat(size = 100, extra = '') {
+  return `
+    <span class="cat-mascot teacher-cat ${extra}" style="--cat-size:${size}px">
+      <svg viewBox="0 0 180 170" width="${size}" height="${size}">
+        <path d="M130 119 Q168 125 155 91 Q150 76 139 87"
+          fill="none" stroke="#888995" stroke-width="12" stroke-linecap="round"/>
+        <path d="M37 62 L30 14 Q29 5 40 13 L72 39 M108 39 L140 13 Q151 5 150 17 L142 65"
+          fill="#aaaab5" stroke="#666675" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M39 33 L37 19 L58 40 M119 40 L143 19 L140 38" fill="#f5b7c8"/>
+        <ellipse cx="90" cy="88" rx="60" ry="57" fill="#b9bac5" stroke="#666675" stroke-width="4"/>
+        <ellipse cx="49" cy="104" rx="10" ry="6" fill="#f3a7bd"/>
+        <ellipse cx="131" cy="104" rx="10" ry="6" fill="#f3a7bd"/>
+        <ellipse cx="68" cy="86" rx="7" ry="10" fill="#373347"/>
+        <ellipse cx="112" cy="86" rx="7" ry="10" fill="#373347"/>
+        <circle cx="70" cy="82" r="3" fill="white"/>
+        <circle cx="114" cy="82" r="3" fill="white"/>
+        <g fill="none" stroke="#55428e" stroke-width="3">
+          <circle cx="68" cy="86" r="16"/>
+          <circle cx="112" cy="86" r="16"/>
+          <path d="M84 86 Q90 81 96 86"/>
+        </g>
+        <path d="M85 103 Q90 97 95 103 Q91 109 90 109 Q89 109 85 103" fill="#d97896"/>
+        <path d="M90 109 Q82 119 75 112 M90 109 Q98 119 105 112"
+          fill="none" stroke="#666675" stroke-width="3" stroke-linecap="round"/>
+        <path d="M43 108 L20 103 M45 116 L23 119 M137 108 L160 103 M135 116 L157 119"
+          stroke="#777789" stroke-width="2" stroke-linecap="round"/>
+        <path d="M43 43 L90 15 L137 43 L90 57 Z" fill="#7967d8" stroke="#55428e" stroke-width="3"/>
+        <path d="M48 44 L48 54 Q90 72 132 54 L132 44" fill="#a18ff0" stroke="#55428e" stroke-width="3"/>
+        <path d="M137 43 L151 50 L137 57" fill="#ffe49a" stroke="#55428e" stroke-width="2"/>
+        <path d="M49 139 Q90 119 131 139 L142 166 L38 166 Z" fill="#7967d8" stroke="#55428e" stroke-width="3"/>
+        <path d="M80 132 L90 143 L100 132 L96 160 L90 166 L84 160 Z" fill="#ffcf80" stroke="#55428e" stroke-width="2"/>
+        <path d="M148 135 L163 72" stroke="#a97842" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </span>`
+}
+
+function triangleSVG(a = 3, b = 4) {
+  const scale = Math.min(150 / Math.max(a, b), 1.8)
+  const x = 35
+  const y = 185
+  const w = a * scale * 10
+  const h = b * scale * 10
+
+  return `
+    <svg class="triangle-svg" viewBox="0 0 300 230">
+      <path d="M${x} ${y} L${x + w} ${y} L${x} ${y - h} Z"
+        fill="#dcd3ff" fill-opacity=".55" stroke="#7967d8" stroke-width="4"/>
+      <path d="M${x + 13} ${y} L${x + 13} ${y - 13} L${x} ${y - 13}"
+        fill="none" stroke="#7967d8" stroke-width="2"/>
+      <text x="${x + w / 2}" y="${y + 22}" class="triangle-label">a = ${a}</text>
+      <text x="${x - 25}" y="${y - h / 2}" class="triangle-label">b = ${b}</text>
+      <text x="${x + w / 2 + 12}" y="${y - h / 2 - 10}" class="triangle-label">c</text>
+    </svg>`
+}
+
+// ==========================================
+// HALAMAN INTRO
+// ==========================================
+
 function introPage() {
-  return `
-    <main class="intro-screen">
-      <section class="intro-card">
-        <div class="intro-logo">△</div>
-        <span class="eyebrow">WELCOME TO YOUR LEARNING SPACE</span>
-        <h1>Pythagoras Space</h1>
-        <h2>Let's Learn with Kak Meyliana</h2>
-        <p>${t().intro}</p>
-        <form id="name-form">
-          <label for="student-name">${t().nickname}</label>
-          <input id="student-name" maxlength="20" placeholder="${state.language === 'id' ? 'Contoh: Mey' : 'Example: Mey'}" required autocomplete="given-name">
-          <button class="primary-btn full-btn">${t().start} →</button>
-        </form>
-        <p class="privacy-note">${state.language === 'id' ? 'Gunakan nama panggilan saja, ya.' : 'Please use a nickname only.'}</p>
-        <div class="intro-language">
-          <button data-language="id">🇮🇩 Indonesia</button>
-          <button data-language="en">🇬🇧 English</button>
-        </div>
-      </section>
-    </main>
-  `
-}
+  const en = state.language === 'en'
 
-function feature(icon, title, description, page, color) {
-  return `
-    <button class="feature-card ${color}" data-page="${page}">
-      <span class="feature-icon">${icon}</span>
-      <h3>${title}</h3>
-      <p>${description}</p>
-      <span class="feature-link">${state.language === 'id' ? 'Pelajari →' : 'Explore →'}</span>
-    </button>
-  `
-}
-
-function triangle(a, b) {
-  const width = 240
-  const height = 180
-  return `
-    <svg class="triangle-svg" viewBox="0 0 300 230" role="img" aria-label="Right triangle illustration">
-      <path d="M35 195 L265 195 L265 25 Z" fill="#7c75e9" fill-opacity=".12" stroke="#7568D9" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M242 195 V172 H265" fill="none" stroke="#7568D9" stroke-width="3"/>
-      <text x="145" y="220" text-anchor="middle" class="triangle-label">a = ${a}</text>
-      <text x="280" y="112" class="triangle-label">b = ${b}</text>
-      <text x="125" y="95" class="triangle-label">c</text>
-    </svg>
-  `
-}
-
-function homePage() {
-  const c = t()
-  return `
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">YOUR MATH JOURNEY STARTS HERE</span>
-        <h1>${state.language === 'id' ? 'Hai' : 'Hi'}, ${safe(state.name)}! 👋</h1>
-        <h2>${c.welcome}</h2>
-        <p>${c.subtitle}</p>
-        <button class="primary-btn" data-page="material">${c.begin} →</button>
-      </div>
-      <div class="hero-art">
-        ${triangle(3, 4)}
-        <div class="floating-formula">a² + b² = c²</div>
-      </div>
-    </section>
-
-    <section class="section-heading">
-      <div><span class="eyebrow">LEARNING CENTER</span><h2>${c.lessons}</h2></div>
-    </section>
-
-    <div class="feature-grid">
-      ${feature('▤', c.material, c.materialDesc, 'material', 'blue')}
-      ${feature('△', c.simulation, c.simulationDesc, 'simulation', 'purple')}
-      ${feature('✎', c.practice, c.practiceDesc, 'practice', 'orange')}
-      ${feature('★', c.quiz, c.quizDesc, 'quiz', 'green')}
-    </div>
-
-    <section class="formula-banner">
-      <div><span class="eyebrow">${state.language === 'id' ? 'INGAT RUMUS INI' : 'REMEMBER THIS'}</span><h2>${c.formula}</h2><p>${c.definition}</p></div>
-      <div class="formula-big">a² + b² = c²</div>
-    </section>
-  `
-}
-
-function materialPage() {
-  const c = t()
-  return `
-    <div class="page-heading"><span class="eyebrow">LEARNING MATERIAL</span><h1>${c.material}</h1><p>${c.definition}</p></div>
-    <section class="content-card material-layout">
-      <div>
-        <h2>${state.language === 'id' ? 'Apa itu Teorema Pythagoras?' : 'What is the Pythagorean Theorem?'}</h2>
-        <p>${c.definition}</p>
-        <div class="formula-big inline-formula">a² + b² = c²</div>
-        <ul class="explain-list">
-          <li><strong>a</strong> = ${c.base}</li>
-          <li><strong>b</strong> = ${c.height}</li>
-          <li><strong>c</strong> = ${c.hypotenuse}</li>
-        </ul>
-      </div>
-      <div class="triangle-panel">${triangle(3, 4)}</div>
-    </section>
-    <section class="content-card">
-      <h2>${c.example}</h2>
-      <p>${c.exampleDesc}</p>
-      <h3>${c.solution}</h3>
-      <div class="calculation">c² = 3² + 4²<br>c² = 9 + 16<br>c² = 25<br>c = √25 = 5 cm</div>
-      <p class="success-note">${c.answer}: <strong>5 cm</strong></p>
-    </section>
-    <button class="primary-btn" data-page="simulation">${c.simulation} →</button>
-  `
-}
-
-function simulationPage() {
-  const c = t()
-  const result = Math.sqrt(state.a ** 2 + state.b ** 2)
-  return `
-    <div class="page-heading"><span class="eyebrow">INTERACTIVE EXPERIENCE</span><h1>${c.simulationTitle}</h1><p>${c.simulationDesc}</p></div>
-    <section class="content-card simulation-layout">
-      <div class="simulation-controls">
-        <label>${c.base}: <strong>${state.a} cm</strong></label>
-        <input id="side-a" type="range" min="1" max="15" value="${state.a}">
-        <label>${c.height}: <strong>${state.b} cm</strong></label>
-        <input id="side-b" type="range" min="1" max="15" value="${state.b}">
-        <div class="result-box"><span>${c.result}</span><strong>${result.toFixed(2)} cm</strong></div>
-      </div>
-      <div class="triangle-panel">${triangle(state.a, state.b)}</div>
-    </section>
-    <p class="hint">${state.language === 'id' ? 'Coba geser kedua pengatur dan amati perubahan panjang sisi miring.' : 'Move both sliders and observe how the hypotenuse changes.'}</p>
-  `
-}
-
-function practicePage() {
-  const c = t()
-  return `
-    <div class="page-heading"><span class="eyebrow">PRACTICE TIME</span><h1>${c.practiceTitle}</h1></div>
-    <section class="content-card">
-      <span class="question-number">01 / 01</span>
-      <h2>${c.practiceQuestion}</h2>
-      <label for="practice-answer">${state.language === 'id' ? 'Masukkan jawaban (cm)' : 'Enter your answer (cm)'}</label>
-      <input id="practice-answer" type="number" min="0" placeholder="${state.language === 'id' ? 'Jawaban kamu' : 'Your answer'}" value="${safe(state.practiceAnswer)}">
-      <button class="primary-btn" id="check-practice">${c.check}</button>
-      <div id="practice-feedback" aria-live="polite"></div>
-    </section>
-  `
-}
-
-function quizPage() {
-  const c = t()
-  const list = questions[state.language]
-
-  if (state.question >= list.length) {
-    return `
-      <section class="content-card result-card">
-        <div class="result-star">★</div>
-        <h1>${c.result}</h1>
-        <div class="score-number">${Math.round(state.score / list.length * 100)}</div>
-        <p>${state.score} / ${list.length} ${state.language === 'id' ? 'jawaban benar' : 'correct answers'}</p>
-        <button class="primary-btn" id="restart-quiz">${c.restart}</button>
-      </section>
-    `
-  }
-
-  const q = list[state.question]
-  return `
-    <div class="page-heading"><span class="eyebrow">TEST YOUR KNOWLEDGE</span><h1>${c.quizTitle}</h1></div>
-    <section class="content-card quiz-card">
-      <div class="quiz-progress">${c.question || (state.language === 'id' ? 'Pertanyaan' : 'Question')} ${state.question + 1} / ${list.length}</div>
-      <div class="progress-track"><div style="width:${(state.question + 1) / list.length * 100}%"></div></div>
-      <h2>${q[0]}</h2>
-      <div class="answer-options">
-        ${q[1].map((option, i) => `
-          <button class="answer-option" data-answer="${i}" ${state.answered ? 'disabled' : ''}>${String.fromCharCode(65 + i)}. ${option}</button>
-        `).join('')}
-      </div>
-      <div id="quiz-feedback" aria-live="polite"></div>
-      ${state.answered ? `<button class="primary-btn" id="next-question">${state.question === list.length - 1 ? c.finish : c.next} →</button>` : ''}
-    </section>
-  `
-}
-
-function settingsPage() {
-  const c = t()
-  return `
-    <div class="page-heading"><span class="eyebrow">PERSONAL SPACE</span><h1>${c.settingsTitle}</h1></div>
-    <section class="content-card settings-card">
-      <div class="setting-row"><div><h3>${c.language}</h3><p>Choose your preferred language</p></div>
-        <select id="settings-language"><option value="id" ${state.language === 'id' ? 'selected' : ''}>🇮🇩 Indonesia</option><option value="en" ${state.language === 'en' ? 'selected' : ''}>🇬🇧 English</option></select>
-      </div>
-      <div class="setting-row"><div><h3>${c.appearance}</h3><p>Customize your learning space</p></div>
-        <select id="settings-theme"><option value="light" ${state.theme === 'light' ? 'selected' : ''}>${c.light}</option><option value="dark" ${state.theme === 'dark' ? 'selected' : ''}>${c.dark}</option></select>
-      </div>
-      <div class="setting-row"><div><h3>${c.music}</h3><p>${state.language === 'id' ? 'Musik instrumental lembut' : 'Soft instrumental music'}</p></div>
-        <button class="secondary-btn" id="settings-music">${state.music ? '♫ ON' : '♫ OFF'}</button>
-      </div>
-      <div class="setting-row"><div><h3>${c.changeName}</h3><p>${safe(state.name)}</p></div>
-        <button class="secondary-btn" id="edit-name">${c.changeName}</button>
-      </div>
-    </section>
-  `
-}
-
-function pageContent() {
-  const pages = {
-    home: homePage,
-    material: materialPage,
-    simulation: simulationPage,
-    practice: practicePage,
-    quiz: quizPage,
-    settings: settingsPage
-  }
-  return (pages[state.page] || homePage)()
-}
-
-const pageNames = ['home', 'material', 'simulation', 'practice', 'quiz']
-const pageIcons = ['⌂', '▤', '△', '✎', '★']
-
-function render() {
-  document.body.dataset.theme = state.theme
-
-  if (state.page === 'intro') {
-    app.innerHTML = introPage()
-    $('#name-form').addEventListener('submit', event => {
-      event.preventDefault()
-      const name = $('#student-name').value.trim().slice(0, 20)
-      if (!name) return
-      state.name = name
-      localStorage.setItem('pythagoras-name', name)
-      state.page = 'home'
-      render()
-    })
-    app.querySelectorAll('[data-language]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.language = button.dataset.language
-        render()
-      })
-    })
-    return
-  }
-
-  const c = t()
   app.innerHTML = `
+    <section class="intro-screen">
+      <div class="intro-card">
+        <div class="intro-controls">
+          <select id="intro-language">
+            <option value="id" ${!en ? 'selected' : ''}>🇮🇩 Indonesia</option>
+            <option value="en" ${en ? 'selected' : ''}>🇬🇧 English</option>
+          </select>
+          <button class="secondary-btn" id="intro-music">
+            ${state.music ? '🔊 Music ON' : '🎵 Music OFF'}
+          </button>
+        </div>
+
+        <div class="intro-logo">${cat(95)}</div>
+        <span class="eyebrow">WELCOME TO PYTHAMATH</span>
+        <h1>PythaMath</h1>
+        <h2>${en ? 'Make Learning Pythagoras Fun!' : 'Belajar Pythagoras Jadi Lebih Seru!'}</h2>
+        <p>${en ? 'Let’s start our math adventure together!' : 'Yuk, mulai petualangan matematika kita!'}</p>
+
+        <form id="intro-form">
+          <label for="student-name">${en ? 'What is your name?' : 'Siapa namamu?'}</label>
+          <input id="student-name" maxlength="30" required
+            placeholder="${en ? 'Enter your nickname...' : 'Tulis nama panggilanmu...'}">
+          <button class="primary-btn full-btn" type="submit">
+            ${en ? 'Start Adventure ✨' : 'Mulai Petualangan ✨'}
+          </button>
+        </form>
+        <p class="privacy-note">${en ? 'Your name is only used in this application.' : 'Nama hanya digunakan untuk menyapa di aplikasi ini.'}</p>
+      </div>
+    </section>`
+
+  document.querySelector('#intro-language').addEventListener('change', event => {
+    state.language = event.target.value
+    localStorage.setItem('pythaLanguage', state.language)
+    render()
+  })
+
+  document.querySelector('#intro-music').addEventListener('click', toggleMusic)
+
+  document.querySelector('#intro-form').addEventListener('submit', event => {
+    event.preventDefault()
+    const name = document.querySelector('#student-name').value.trim()
+    if (!name) return
+
+    state.name = name
+    localStorage.setItem('pythaName', name)
+    render()
+  })
+}
+
+// ==========================================
+// KERANGKA APLIKASI
+// ==========================================
+
+function shell(content, title) {
+  return `
     <div class="layout">
       <aside class="sidebar">
         <div class="brand">
-          <div class="brand-icon">△</div>
-          <div><strong>Pythagoras Space</strong><small>LET'S LEARN WITH KAK MEYLIANA</small></div>
+          <div class="brand-icon">${cat(48)}</div>
+          <div><strong>PythaMath</strong><small>LEARN • PLAY • GROW</small></div>
         </div>
-        <div class="nav-label">${state.language === 'id' ? 'MENU UTAMA' : 'MAIN MENU'}</div>
+
+        <div class="nav-label">MENU UTAMA</div>
         <nav>
-          ${pageNames.map((page, i) => `
-            <button class="nav-item ${state.page === page ? 'active' : ''}" data-page="${page}">
-              <span>${pageIcons[i]}</span>${c[page]}
-            </button>
-          `).join('')}
+          ${menu.map(([id, icon, label]) => `
+            <button class="nav-item ${state.page === id ? 'active' : ''}" data-page="${id}">
+              <span>${icon}</span>${label}
+            </button>`).join('')}
         </nav>
+
         <div class="sidebar-bottom">
-          <div class="sidebar-note">✦ ${state.language === 'id' ? 'Belajar dengan menyenangkan!' : 'Make learning fun!'}</div>
-          <button class="nav-item ${state.page === 'settings' ? 'active' : ''}" data-page="settings"><span>⚙</span>${c.settings}</button>
+          <div class="sidebar-note">${cat(45)}<br>Semangat belajar! Kamu pasti bisa! 💜</div>
         </div>
       </aside>
 
       <main class="main">
         <header class="topbar">
-          <div class="breadcrumb">Pythagoras Space <span>/</span> ${c[state.page] || c.settings}</div>
+          <div class="breadcrumb">Beranda <span>›</span> ${title}</div>
           <div class="top-actions">
-            <select id="header-language" aria-label="${c.language}">
-              <option value="id" ${state.language === 'id' ? 'selected' : ''}>🇮🇩 ID</option>
-              <option value="en" ${state.language === 'en' ? 'selected' : ''}>🇬🇧 EN</option>
-            </select>
-            <button id="header-music" class="icon-button" aria-label="${c.music}">♫ ${state.music ? 'ON' : 'OFF'}</button>
-            <button class="avatar" data-page="settings" aria-label="${c.settings}">${safe(state.name.charAt(0).toUpperCase())}</button>
+            <button class="icon-button" id="theme-toggle">${state.dark ? '☀️' : '🌙'}</button>
+            <button class="icon-button" id="music-toggle">${state.music ? '🔊' : '🎵'}</button>
+            <div class="avatar">${escapeHTML(state.name.charAt(0).toUpperCase())}</div>
           </div>
         </header>
-        <div class="page-content">${pageContent()}</div>
-        <footer>${c.footer}</footer>
-      </main>
-    </div>
-  `
 
-  app.querySelectorAll('[data-page]').forEach(button => {
+        <section class="page-content">${content}</section>
+        <footer>Made with 💜 for little math adventures • PythaMath</footer>
+      </main>
+    </div>`
+}
+
+// ==========================================
+// BERANDA
+// ==========================================
+
+function feature(color, icon, title, desc, page, link) {
+  return `
+    <button class="feature-card ${color}" data-go="${page}">
+      <div class="feature-icon">${icon}</div>
+      <h3>${title}</h3>
+      <p>${desc}</p>
+      <span class="feature-link">${link}</span>
+    </button>`
+}
+
+function homePage() {
+  return `
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">LET'S LEARN SOMETHING FUN</span>
+        <h1>Halo, ${escapeHTML(state.name)}! 👋</h1>
+        <h2>Siap menjadi jagoan Pythagoras?</h2>
+        <p>Belajar matematika tidak harus membosankan. Yuk, temani kucing pintar kita menjelajahi dunia segitiga!</p>
+        <button class="primary-btn" data-go="materi">✨ Mulai Belajar →</button>
+      </div>
+      <div class="hero-art">
+        ${cat(210, 'cat-bounce')}
+        <div class="floating-formula">a² + b² = c²</div>
+      </div>
+    </section>
+
+    <div class="section-heading">
+      <span class="eyebrow">EXPLORE PYTHAGORAS</span>
+      <h2>Fitur Unggulan ✨</h2>
+    </div>
+
+    <div class="feature-grid">
+      ${feature('blue', '📖', 'Materi Lengkap', 'Pelajari konsep Pythagoras dengan mudah.', 'materi', 'Lihat Materi →')}
+      ${feature('purple', '📐', 'Simulasi Seru', 'Eksplorasi segitiga secara langsung.', 'simulasi', 'Coba Simulasi →')}
+      ${feature('orange', '🎯', 'Latihan Soal', 'Asah kemampuanmu dengan 20 soal.', 'latihan', 'Mulai Latihan →')}
+      ${feature('green', '🏆', 'Quiz Menantang', 'Uji pemahamanmu dan raih skor terbaik.', 'quiz', 'Main Quiz →')}
+    </div>
+
+    <section class="formula-banner">
+      <div>
+        <span class="eyebrow">REMEMBER THIS!</span>
+        <h2>Rumus Pythagoras</h2>
+        <p>Jumlah kuadrat kedua sisi siku-siku sama dengan kuadrat sisi miring.</p>
+      </div>
+      <div class="formula-big">a² + b² = c²</div>
+    </section>
+
+    <div class="section-heading"><h2>Teman Belajarmu 🐾</h2></div>
+    <div class="content-card" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      ${cat(105, 'cat-bounce')}
+      <div style="flex:1;min-width:180px">
+        <h3>Meow! Semangat terus!</h3>
+        <p>Ayo belajar sedikit demi sedikit. Kamu pasti bisa memahami Pythagoras!</p>
+        <button class="secondary-btn" data-go="chat">Tanya Kak Mey</button>
+      </div>
+    </div>`
+}
+
+// ==========================================
+// MATERI
+// ==========================================
+
+function materiPage() {
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">LET'S UNDERSTAND</span>
+      <h1>Materi Teorema Pythagoras 📚</h1>
+      <p>Kenali konsep, rumus, dan penerapan Pythagoras dalam kehidupan sehari-hari.</p>
+    </div>
+
+    <div class="content-card material-layout">
+      <div>
+        <h2>1. Apa itu Teorema Pythagoras?</h2>
+        <p>Teorema Pythagoras adalah aturan matematika yang berlaku pada segitiga siku-siku. Kuadrat sisi miring sama dengan jumlah kuadrat kedua sisi lainnya.</p>
+        <div class="calculation">a² + b² = c²</div>
+        <ul class="explain-list">
+          <li>a adalah sisi siku-siku pertama.</li>
+          <li>b adalah sisi siku-siku kedua.</li>
+          <li>c adalah sisi miring (hipotenusa).</li>
+        </ul>
+      </div>
+      <div class="triangle-panel">${triangleSVG(3, 4)}</div>
+    </div>
+
+    <div class="content-card">
+      <h2>2. Contoh Perhitungan</h2>
+      <p>Diketahui segitiga siku-siku dengan panjang sisi 3 cm dan 4 cm. Tentukan sisi miringnya!</p>
+      <div class="calculation">
+        c² = a² + b²<br>
+        c² = 3² + 4²<br>
+        c² = 9 + 16<br>
+        c² = 25<br>
+        c = √25 = 5 cm
+      </div>
+      <div class="success-note">Jadi, panjang sisi miring adalah 5 cm. Yeay! 🎉</div>
+    </div>
+
+    <div class="content-card">
+      <h2>3. Penerapan dalam Kehidupan</h2>
+      <p>Teorema Pythagoras dapat digunakan untuk menghitung panjang tangga yang disandarkan pada dinding, diagonal persegi panjang, dan jarak dua titik.</p>
+      <div class="hint">💡 Ingat: Teorema ini hanya berlaku pada segitiga siku-siku.</div>
+    </div>
+    <button class="primary-btn" data-go="simulasi">Coba Simulasi →</button>`
+}
+
+// ==========================================
+// SIMULASI
+// ==========================================
+
+function simulasiPage() {
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">LET'S EXPLORE</span>
+      <h1>Simulasi Segitiga 📐</h1>
+      <p>Geser nilai sisi dan lihat bagaimana panjang sisi miring berubah.</p>
+    </div>
+
+    <div class="content-card simulation-layout">
+      <div class="triangle-panel" id="simulation-triangle">${triangleSVG(3, 4)}</div>
+      <div class="simulation-controls">
+        <label>Sisi a: <strong id="value-a">3</strong> cm</label>
+        <input type="range" id="side-a" min="1" max="15" value="3">
+        <label>Sisi b: <strong id="value-b">4</strong> cm</label>
+        <input type="range" id="side-b" min="1" max="15" value="4">
+        <div class="result-box">
+          <span>Panjang sisi miring (c)</span>
+          <strong id="value-c">5 cm</strong>
+          <span id="simulation-work">√(3² + 4²) = 5</span>
+        </div>
+        <div class="hint">Coba ubah angka a dan b untuk bereksplorasi!</div>
+      </div>
+    </div>`
+}
+
+// ==========================================
+// LATIHAN
+// ==========================================
+
+function latihanPage() {
+  if (state.practiceDone) {
+    return `
+      <div class="content-card result-card">
+        <div class="result-star">🌟</div>
+        <h1>Latihan Selesai!</h1>
+        <p>Kamu sudah menyelesaikan 20 soal Pythagoras.</p>
+        <div class="score-number">${state.practiceScore}/20</div>
+        <h2>${state.practiceScore >= 15 ? 'Hebat sekali! 🎉' : 'Tetap semangat belajar! 💜'}</h2>
+        <button class="primary-btn" data-action="restart-practice">Ulangi Latihan ↻</button>
+        <button class="secondary-btn" data-go="home">Kembali ke Beranda</button>
+      </div>`
+  }
+
+  const q = questions[state.practiceIndex]
+
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">PRACTICE MAKES PROGRESS</span>
+      <h1>Latihan Pythagoras ✏️</h1>
+      <p>Jawab 20 soal dan kumpulkan poin!</p>
+    </div>
+    <div class="content-card">
+      <div class="question-number">Soal ${state.practiceIndex + 1} dari 20</div>
+      <div class="progress-track"><div style="width:${state.practiceIndex / 20 * 100}%"></div></div>
+      <h2>${q.q}</h2>
+      <div class="answer-options">
+        ${q.a.map((answer, i) => `
+          <button class="answer-option" data-answer="${i}" ${state.practiceAnswered ? 'disabled' : ''}>
+            ${String.fromCharCode(65 + i)}. ${answer}
+          </button>`).join('')}
+      </div>
+      <div id="answer-feedback"></div>
+      ${state.practiceAnswered ? '<button class="primary-btn" data-action="next-practice">Soal Berikutnya →</button>' : ''}
+    </div>`
+}
+
+// ==========================================
+// QUIZ
+// ==========================================
+
+function quizPage() {
+  if (state.quizDone) {
+    return `
+      <div class="content-card result-card">
+        <div class="result-star">🏆</div>
+        <h1>Quiz Selesai!</h1>
+        <p>Skor quiz kamu:</p>
+        <div class="score-number">${state.quizScore * 20}/100</div>
+        <h2>${state.quizScore >= 4 ? 'Amazing! Kamu hebat!' : 'Good try! Terus berlatih!'}</h2>
+        <button class="primary-btn" data-action="restart-quiz">Main Lagi ↻</button>
+      </div>`
+  }
+
+  const q = quizQuestions[state.quizIndex]
+
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">CHALLENGE YOURSELF</span>
+      <h1>Quiz Pythagoras 🏆</h1>
+      <p>Jawab 5 pertanyaan pilihan ganda dan kumpulkan poin!</p>
+    </div>
+    <div class="content-card">
+      <div class="quiz-progress">Pertanyaan ${state.quizIndex + 1} / 5</div>
+      <div class="progress-track"><div style="width:${state.quizIndex / 5 * 100}%"></div></div>
+      <h2>${q.q}</h2>
+      <div class="answer-options">
+        ${q.a.map((answer, i) => `
+          <button class="answer-option" data-quiz-answer="${i}" ${state.quizAnswered ? 'disabled' : ''}>
+            ${String.fromCharCode(65 + i)}. ${answer}
+          </button>`).join('')}
+      </div>
+      <div id="quiz-feedback"></div>
+      ${state.quizAnswered ? '<button class="primary-btn" data-action="next-quiz">Lanjut →</button>' : ''}
+    </div>`
+}
+
+// ==========================================
+// TANYA KAK MEY
+// ==========================================
+
+function getBotReply(message) {
+  const text = message.toLowerCase()
+
+  if (text.includes('halo') || text.includes('hai') || text.includes('hello')) {
+    return `Halo, ${state.name}! Ada yang bisa Kak Mey bantu hari ini? 🐱`
+  }
+
+  if (text.includes('rumus') || text.includes('pythagoras')) {
+    return 'Rumus Teorema Pythagoras adalah a² + b² = c². Huruf c merupakan sisi miring atau hipotenusa.'
+  }
+
+  if (text.includes('contoh')) {
+    return 'Contohnya, jika dua sisi siku-siku memiliki panjang 3 cm dan 4 cm, maka sisi miringnya adalah √(3² + 4²) = 5 cm.'
+  }
+
+  if (text.includes('segitiga')) {
+    return 'Segitiga siku-siku memiliki satu sudut sebesar 90°. Teorema Pythagoras digunakan untuk mencari panjang salah satu sisinya.'
+  }
+
+  if (text.includes('sisi miring') || text.includes('hipotenusa')) {
+    return 'Sisi miring adalah sisi terpanjang dalam segitiga siku-siku dan berada di depan sudut 90°.'
+  }
+
+  if (text.includes('terima kasih') || text.includes('makasih')) {
+    return 'Sama-sama! Keep learning and keep exploring! 🌟'
+  }
+
+  return 'Pertanyaan menarik! Kak Mey bisa membantu menjelaskan rumus Pythagoras, segitiga siku-siku, dan contoh soal. Coba tanyakan salah satunya, ya! 💜'
+}
+
+function chatPage() {
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">LET'S TALK</span>
+      <h1>Tanya Kak Mey 💬</h1>
+      <p>Yuk, ngobrol dan tanyakan hal-hal seputar Pythagoras!</p>
+    </div>
+
+    <div class="chat-card">
+      <div class="chat-header">
+        ${cat(65)}
+        <div>
+          <h3>Kak Mey</h3>
+          <p>Math Learning Assistant • Online 🟢</p>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble bot">
+          Hai, ${escapeHTML(state.name)}! Aku Kak Mey. Ada yang ingin kamu tanyakan tentang Teorema Pythagoras? 😊
+        </div>
+        ${state.chat.map(item => `
+          <div class="chat-bubble ${item.from}">
+            ${escapeHTML(item.text)}
+          </div>`).join('')}
+      </div>
+
+      <form class="chat-form" id="chat-form">
+        <input id="chat-input" type="text" placeholder="Tulis pertanyaanmu di sini..." autocomplete="off" required>
+        <button type="submit">Send ✨</button>
+      </form>
+    </div>`
+}
+
+// ==========================================
+// PENGATURAN
+// ==========================================
+
+function pengaturanPage() {
+  return `
+    <div class="page-heading">
+      <span class="eyebrow">YOUR SPACE</span>
+      <h1>Pengaturan ⚙️</h1>
+      <p>Atur pengalaman belajarmu di PythaMath.</p>
+    </div>
+
+    <div class="content-card">
+      <div class="setting-item">
+        <div><h3>Dark Mode 🌙</h3><p>Ubah tampilan menjadi mode gelap.</p></div>
+        <button id="settings-theme">Ganti Tema</button>
+      </div>
+      <div class="setting-item">
+        <div><h3>Background Music 🎵</h3><p>Aktifkan atau matikan musik aplikasi.</p></div>
+        <button id="settings-music">${state.music ? 'Matikan Musik' : 'Nyalakan Musik'}</button>
+      </div>
+      <div class="setting-item">
+        <div><h3>Nama Pengguna 👤</h3><p>${escapeHTML(state.name)}</p></div>
+        <button id="change-name">Ganti Nama</button>
+      </div>
+      <div class="setting-item">
+        <div><h3>Ulangi Latihan 🔄</h3><p>Mulai kembali latihan dari awal.</p></div>
+        <button data-action="restart-practice">Ulangi</button>
+      </div>
+      <div class="setting-item">
+        <div><h3>Ulangi Quiz 📝</h3><p>Mulai kembali kuis dari awal.</p></div>
+        <button data-action="restart-quiz">Ulangi</button>
+      </div>
+    </div>`
+}
+
+// ==========================================
+// INTERAKSI SIMULASI
+// ==========================================
+
+function setupSimulation() {
+  const sliderA = document.querySelector('#side-a')
+  const sliderB = document.querySelector('#side-b')
+
+  if (!sliderA || !sliderB) return
+
+  function update() {
+    const a = Number(sliderA.value)
+    const b = Number(sliderB.value)
+    const c = Math.sqrt(a * a + b * b)
+
+    document.querySelector('#value-a').textContent = a
+    document.querySelector('#value-b').textContent = b
+    document.querySelector('#value-c').textContent = `${c.toFixed(2)} cm`
+    document.querySelector('#simulation-work').textContent =
+      `√(${a}² + ${b}²) = ${c.toFixed(2)}`
+
+    document.querySelector('#simulation-triangle').innerHTML = triangleSVG(a, b)
+  }
+
+  sliderA.addEventListener('input', update)
+  sliderB.addEventListener('input', update)
+  update()
+}
+
+// ==========================================
+// INTERAKSI LATIHAN
+// ==========================================
+
+function setupPractice() {
+  document.querySelectorAll('[data-answer]').forEach(button => {
     button.addEventListener('click', () => {
-      state.page = button.dataset.page
+      if (state.practiceAnswered) return
+
+      const selected = Number(button.dataset.answer)
+      const question = questions[state.practiceIndex]
+      const feedback = document.querySelector('#answer-feedback')
+
+      state.practiceAnswered = true
+
+      if (selected === question.c) {
+        state.practiceScore++
+        feedback.innerHTML = `<div class="feedback correct">Benar! Great job! 🎉<br>${question.e}</div>`
+      } else {
+        feedback.innerHTML = `<div class="feedback incorrect">Belum tepat. Jawaban yang benar: ${question.a[question.c]}.<br>${question.e}</div>`
+      }
+
       render()
     })
   })
 
-  $('#header-language').addEventListener('change', event => {
-    state.language = event.target.value
+  document.querySelector('[data-action="next-practice"]')?.addEventListener('click', () => {
+    state.practiceIndex++
+
+    if (state.practiceIndex >= questions.length) {
+      state.practiceDone = true
+    }
+
+    state.practiceAnswered = false
     render()
   })
-
-  $('#header-music').addEventListener('click', toggleMusic)
-  bindPageEvents()
 }
 
-let audioContext
-let masterGain
-let musicTimer
+// ==========================================
+// INTERAKSI QUIZ
+// ==========================================
 
-function playTone(frequency, start, duration, volume) {
-  if (!audioContext || !masterGain) return
-  const oscillator = audioContext.createOscillator()
-  const gain = audioContext.createGain()
-  oscillator.type = 'sine'
-  oscillator.frequency.value = frequency
-  gain.gain.setValueAtTime(0.001, start)
-  gain.gain.linearRampToValueAtTime(volume, start + 0.08)
-  gain.gain.exponentialRampToValueAtTime(0.001, start + duration)
-  oscillator.connect(gain)
-  gain.connect(masterGain)
-  oscillator.start(start)
-  oscillator.stop(start + duration)
-}
+function setupQuiz() {
+  document.querySelectorAll('[data-quiz-answer]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (state.quizAnswered) return
 
-function playMelody() {
-  if (!state.music || !audioContext) return
-  const now = audioContext.currentTime + 0.1
-  ;[523, 659, 784, 659, 587, 698, 880, 698].forEach((note, i) => {
-    playTone(note, now + i * 0.42, 0.5, 0.12)
+      const selected = Number(button.dataset.quizAnswer)
+      const question = quizQuestions[state.quizIndex]
+      const feedback = document.querySelector('#quiz-feedback')
+
+      state.quizAnswered = true
+
+      if (selected === question.c) {
+        state.quizScore++
+        feedback.innerHTML = '<div class="feedback correct">Jawaban benar! Excellent! 🌟</div>'
+      } else {
+        feedback.innerHTML = `<div class="feedback incorrect">Belum tepat. Jawaban yang benar: ${question.a[question.c]}.</div>`
+      }
+
+      render()
+    })
   })
-  musicTimer = setTimeout(playMelody, 4200)
+
+  document.querySelector('[data-action="next-quiz"]')?.addEventListener('click', () => {
+    state.quizIndex++
+
+    if (state.quizIndex >= quizQuestions.length) {
+      state.quizDone = true
+    }
+
+    state.quizAnswered = false
+    render()
+  })
 }
 
-async function toggleMusic() {
-  if (state.music) {
-    state.music = false
-    clearTimeout(musicTimer)
-    if (masterGain) masterGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.15)
-  } else {
-    const AudioEngine = window.AudioContext || window.webkitAudioContext
-    if (!AudioEngine) {
-      alert('Browser ini tidak mendukung musik.')
-      return
-    }
-    if (!audioContext) {
-      audioContext = new AudioEngine()
-      masterGain = audioContext.createGain()
-      masterGain.connect(audioContext.destination)
-    }
-    await audioContext.resume()
-    state.music = true
-    masterGain.gain.setTargetAtTime(0.12, audioContext.currentTime, 0.3)
-    playMelody()
-  }
+// ==========================================
+// INTERAKSI CHAT
+// ==========================================
+
+function setupChat() {
+  const form = document.querySelector('#chat-form')
+  const input = document.querySelector('#chat-input')
+
+  if (!form || !input) return
+
+  form.addEventListener('submit', event => {
+    event.preventDefault()
+
+    const message = input.value.trim()
+    if (!message) return
+
+    state.chat.push({ from: 'user', text: message })
+    state.chat.push({ from: 'bot', text: getBotReply(message) })
+
+    render()
+
+    const messages = document.querySelector('#chat-messages')
+    if (messages) messages.scrollTop = messages.scrollHeight
+  })
+}
+
+// ==========================================
+// PENGATURAN DAN TEMA
+// ==========================================
+
+function toggleTheme() {
+  state.dark = !state.dark
+  localStorage.setItem('pythaDark', String(state.dark))
   render()
 }
 
-function bindPageEvents() {
-  if ($('#side-a')) {
-    $('#side-a').addEventListener('input', event => {
-      state.a = Number(event.target.value)
-      render()
-    })
-    $('#side-b').addEventListener('input', event => {
-      state.b = Number(event.target.value)
-      render()
-    })
-  }
+function setupSettings() {
+  document.querySelector('#settings-theme')?.addEventListener('click', toggleTheme)
+  document.querySelector('#settings-music')?.addEventListener('click', toggleMusic)
 
-  if ($('#check-practice')) {
-    $('#practice-answer').addEventListener('input', event => {
-      state.practiceAnswer = event.target.value
-    })
-    $('#check-practice').addEventListener('click', () => {
-      const feedback = $('#practice-feedback')
-      if (Number(state.practiceAnswer) === 15) {
-        feedback.innerHTML = `<p class="success-note">${t().correct}<br>c = √(9² + 12²) = 15 cm</p>`
-      } else {
-        feedback.innerHTML = `<p class="error-note">${t().incorrect}</p>`
-      }
-    })
-  }
+  document.querySelector('#change-name')?.addEventListener('click', () => {
+    const newName = prompt('Masukkan nama baru:')
+    if (!newName || !newName.trim()) return
 
-  if ($('[data-answer]')) {
-    const q = questions[state.language][state.question]
-    app.querySelectorAll('[data-answer]').forEach(button => {
-      button.addEventListener('click', () => {
-        if (state.answered) return
-        const answer = Number(button.dataset.answer)
-        state.answered = true
-        if (answer === q[2]) state.score++
-        render()
-        const feedback = $('#quiz-feedback')
-        feedback.innerHTML = `
-          <p class="${answer === q[2] ? 'success-note' : 'error-note'}">
-            ${answer === q[2] ? t().correct : t().incorrect}
-          </p>
-          <p>${q[3]}</p>
-        `
-      })
-    })
-  }
+    state.name = newName.trim()
+    localStorage.setItem('pythaName', state.name)
+    render()
+  })
+}
 
-  if ($('#next-question')) {
-    $('#next-question').addEventListener('click', () => {
-      state.question++
-      state.answered = false
-      render()
-    })
-  }
+// ==========================================
+// MUSIK LATAR ORIGINAL
+// ==========================================
 
-  if ($('#restart-quiz')) {
-    $('#restart-quiz').addEventListener('click', () => {
-      state.question = 0
-      state.score = 0
-      state.answered = false
-      render()
-    })
-  }
-
-  if ($('#settings-language')) {
-    $('#settings-language').addEventListener('change', event => {
-      state.language = event.target.value
-      render()
-    })
-    $('#settings-theme').addEventListener('change', event => {
-      state.theme = event.target.value
-      render()
-    })
-    $('#settings-music').addEventListener('click', toggleMusic)
-    $('#edit-name').addEventListener('click', () => {
-      state.page = 'intro'
-      render()
-    })
+function stopMusic() {
+  if (musicTimer) {
+    clearTimeout(musicTimer)
+    musicTimer = null
   }
 }
 
+function startMusic() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext
+  if (!AudioContextClass) return
+
+  if (!audioContext) audioContext = new AudioContextClass()
+  if (audioContext.state === 'suspended') audioContext.resume()
+
+  stopMusic()
+
+  const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 783.99, 698.46]
+  noteIndex = 0
+
+  function playNote() {
+    if (!state.music || !audioContext) return
+
+    const oscillator = audioContext.createOscillator()
+    const gain = audioContext.createGain()
+
+    oscillator.type = 'triangle'
+    oscillator.frequency.value = notes[noteIndex % notes.length]
+
+    gain.gain.setValueAtTime(0.0001, audioContext.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.045, audioContext.currentTime + 0.05)
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.35)
+
+    oscillator.connect(gain)
+    gain.connect(audioContext.destination)
+
+    oscillator.start()
+    oscillator.stop(audioContext.currentTime + 0.4)
+
+    noteIndex++
+    musicTimer = setTimeout(playNote, 420)
+  }
+
+  playNote()
+}
+
+function toggleMusic() {
+  state.music = !state.music
+
+  if (state.music) {
+    startMusic()
+  } else {
+    stopMusic()
+  }
+
+  render()
+}
+
+// ==========================================
+// RENDER APLIKASI
+// ==========================================
+
+function render() {
+  document.body.classList.toggle('dark-mode', state.dark)
+  document.documentElement.classList.toggle('dark-mode', state.dark)
+
+  if (!state.name) {
+    introPage()
+    return
+  }
+
+  const pages = {
+    home: { title: 'Beranda', content: homePage },
+    materi: { title: 'Materi', content: materiPage },
+    simulasi: { title: 'Simulasi', content: simulasiPage },
+    latihan: { title: 'Latihan', content: latihanPage },
+    quiz: { title: 'Quiz', content: quizPage },
+    chat: { title: 'Tanya Kak Mey', content: chatPage },
+    pengaturan: { title: 'Pengaturan', content: pengaturanPage }
+  }
+
+  const currentPage = pages[state.page] || pages.home
+  app.innerHTML = shell(currentPage.content(), currentPage.title)
+
+  document.querySelectorAll('[data-page], [data-go]').forEach(button => {
+    button.addEventListener('click', () => {
+      state.page = button.dataset.page || button.dataset.go
+      render()
+    })
+  })
+
+  document.querySelector('#theme-toggle')?.addEventListener('click', toggleTheme)
+  document.querySelector('#music-toggle')?.addEventListener('click', toggleMusic)
+
+  document.querySelectorAll('[data-action="restart-practice"]').forEach(button => {
+    button.addEventListener('click', () => {
+      state.practiceIndex = 0
+      state.practiceScore = 0
+      state.practiceAnswered = false
+      state.practiceDone = false
+      render()
+    })
+  })
+
+  document.querySelectorAll('[data-action="restart-quiz"]').forEach(button => {
+    button.addEventListener('click', () => {
+      state.quizIndex = 0
+      state.quizScore = 0
+      state.quizAnswered = false
+      state.quizDone = false
+      render()
+    })
+  })
+
+  setupSimulation()
+  setupPractice()
+  setupQuiz()
+  setupChat()
+  setupSettings()
+}
+
 render()
+
+// ==========================================
+// PWA - SERVICE WORKER
+// ==========================================
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(
+      '/aplikasi-pembelajaran-teorema-pythagoras-2225250080/sw.js'
+    )
+      .then(() => console.log('Purrfect Math Adventure siap diinstal!'))
+      .catch(error => console.error('Service Worker Error:', error))
+  })
+}
 
